@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>EruDev&#39;s Homepage</title>
+  
+  <subtitle>菜鸡一枚</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2019-10-27T08:17:33.946Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>EruDev</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SpringBoot整合Jpa</title>
+    <link href="http://yoursite.com/2019/10/20/SpringBoot%E6%95%B4%E5%90%88Jpa/"/>
+    <id>http://yoursite.com/2019/10/20/SpringBoot整合Jpa/</id>
+    <published>2019-10-20T05:38:27.000Z</published>
+    <updated>2019-10-27T08:17:33.946Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;表结构&quot;&gt;&lt;a href=&quot;#表结构&quot; class=&quot;headerlink&quot; title=&quot;表结构&quot;&gt;&lt;/a&gt;表结构&lt;/h4&gt;&lt;figure class=&quot;highlight sql&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;Hero      Category      Hero_Category&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;-------    -------      -------------&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;id           id        hero_id&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;name         name      cate_id&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;	    superior&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;英雄表和分类表是多对多的关系，分类表里面的 &lt;code&gt;superior&lt;/code&gt;为上级分类 id，&lt;code&gt;superior&lt;/code&gt; 和 &lt;code&gt;id&lt;/code&gt; 是一对多的关系。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/categories/SpringBoot/"/>
+    
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/tags/SpringBoot/"/>
+    
+  </entry>
+  
+</feed>
