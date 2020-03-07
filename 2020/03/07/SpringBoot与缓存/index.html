@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> SpringBoot与缓存 · EruDev's Homepage</title><meta name="description" content="SpringBoot与缓存 - EruDev"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="EruDev's Homepage"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/EruDev" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">SpringBoot与缓存</h1><div class="post-info">2020年3月7日</div><div class="post-content"><blockquote>
+<p>JSR-107、Spring缓存抽象、整合Redis</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="一、JSR-107"><a href="#一、JSR-107" class="headerlink" title="一、JSR-107"></a>一、JSR-107</h2><p>Java Caching 定义了五个核心接口，分别是 <strong>CachingProvider</strong>，<strong>CacheManager</strong>，<strong>Cahe</strong>，<strong>Entry</strong>，<strong>Expiry</strong>。</p>
+<ul>
+<li><code>CachingProvider</code>定义了创建、配置、获取、管理和控制多个 CacheManager。一个应用可以在运行期间访问多个 CachingProvider。</li>
+<li>CacheManager 定义了创建、配置、获取、管理和控制多个唯一命名的 Cache，这些 Cahce 存在 CacheManager 的上下文。一个 CacheManager 仅被一个 CachingProdiver 所拥有。</li>
+<li>Cache 是一个类似 map 的数据结构并临时存储以 Key 为索引的值。一个 Cache 仅被一个 CacheManager 拥有。</li>
+<li>Entry 是存储在 Cache 中的 key-value 对</li>
+<li>Expiry 每一个存储在 Cache 中的条目有一个定义的有效期。一旦超过这个时间，条目为过期状态。一旦过期，条目不可访问、更新和删除。缓存有效期可以通过 ExpiryPolicy 设置。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/EruDev/md-picture/master/img/1583556693.png" alt="结构图"></p>
+<h2 id="二、Spring-缓存抽象"><a href="#二、Spring-缓存抽象" class="headerlink" title="二、Spring 缓存抽象"></a>二、Spring 缓存抽象</h2><p>Spring 从 3.1 开始定义了 org.springframework.cache.Cache 和 org.springframework.cache.CacheManager接口来统一不同的缓存技术；并支持使用JCache（JSR-107）注解简化我们开发；</p>
+<ul>
+<li>Cache 接口为缓存的组件规范定义，包含缓存的各种操作集合;</li>
+<li>Cache 接口下 Spring 提供了各种 xxxCache 的实现，如 RedisCache、EhCache，ConcurrentCache 等；</li>
+<li>每次调用需要缓存功能的方法时，Spring 会检查指定参数的指定的目标方法是否已经被调用过；如果有就直接存缓存中获取方法调用后的结果，如果没有就调用方法并缓存结果后返回给用户，下次调用直接从缓存中获取。</li>
+<li>使用 Spring 缓存抽象时 我们需要关注两点：<ul>
+<li>确定方法需要被缓存以及他们的缓存策略</li>
+<li>从缓存中读取之前缓存存储的数据</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/EruDev/md-picture/master/img/1583557157.png" alt="缓存"></p>
+<h2 id="三、几个重要概念、缓存注解"><a href="#三、几个重要概念、缓存注解" class="headerlink" title="三、几个重要概念、缓存注解"></a>三、几个重要概念、缓存注解</h2><table>
+<thead>
+<tr>
+<th>注解</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cache</td>
+<td>缓存接口，定义缓存操作。实现有：RedisCache、EhCacheCache、ConcurrentMapCache等</td>
+</tr>
+<tr>
+<td>CacheManager</td>
+<td>缓存管理器，管理各种缓存组件</td>
+</tr>
+<tr>
+<td>@Cacheable</td>
+<td>主要针对方法配置，能够根据方法的请求参数对其结果进行缓存</td>
+</tr>
+<tr>
+<td>@CacheEvict</td>
+<td>清空缓存</td>
+</tr>
+<tr>
+<td>@CachePut</td>
+<td>保证方法被调用，又希望结果被缓存</td>
+</tr>
+<tr>
+<td>@EnableCaching</td>
+<td>开启基于缓存的注解</td>
+</tr>
+<tr>
+<td>keyGenerator</td>
+<td>缓存数据时key生成策略</td>
+</tr>
+<tr>
+<td>serialize</td>
+<td>缓存数据时value序列化策略</td>
+</tr>
+</tbody></table>
+<h2 id="四、简单分析缓存原理"><a href="#四、简单分析缓存原理" class="headerlink" title="四、简单分析缓存原理"></a>四、简单分析缓存原理</h2><p><img src="https://raw.githubusercontent.com/EruDev/md-picture/master/img/1583560903.png" alt="concurrentMapCacheManager"></p>
+<p><img src="https://raw.githubusercontent.com/EruDev/md-picture/master/img/1583560903.png" alt="getCache"></p>
+<p><img src="https://raw.githubusercontent.com/EruDev/md-picture/master/img/1583561046.png" alt="findInCache"></p>
+<p><img src="https://raw.githubusercontent.com/EruDev/md-picture/master/img/1583561065.png" alt="findCacheItem"></p>
+<ol>
+<li><code>CacheAutoConfiguration</code>会在启动时，注入存在的 <code>CacheConfigration</code>，默认采用的是 <code>SimpleCacheConfiguration</code></li>
+<li><code>SimpleCacheConfiguration</code>：cacheManager() 方法，可以看到会注入一个 <code>ConcurrentMapCacheManager</code></li>
+<li><code>ConcurrentMapCacheManager</code>:  <strong>getCache()</strong> 是用 concurrentMap 来存储的，首次调用的时候，如果没有该数据，会调用<code>createConcurrentMapCache</code></li>
+<li>@Cacheable：<ol>
+<li>方法运行之前，先去查询 Cache (缓存组件)，按照 cacheNames 指定的名字获取；CacheManager先获取相应的缓存，第一次获取缓存如果没有 Cache 组件自动创建</li>
+<li>去 Cache 中查找缓存的内容，使用一个 key，默认就是方法的参数，key 是按照某种策略生成的，默认是keyGenerator生成的</li>
+<li>没有查到缓存就调用目标方法</li>
+<li>将目标方法返回的结果，放进缓存中</li>
+</ol>
+</li>
+</ol>
+</div></article></div></main><footer><div class="paginator"><a href="/2019/10/27/SpringBoot整合Mybatis-Plus/" class="next">下一篇</a></div><div class="copyright"><p>© 2018 - 2020 <a href="http://yoursite.com">EruDev</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
